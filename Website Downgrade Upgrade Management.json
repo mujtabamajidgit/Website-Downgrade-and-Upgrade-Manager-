@@ -1,0 +1,250 @@
+{
+  "name": "Website Downgrade Upgrade Management",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -576,
+        -240
+      ],
+      "id": "16a0e30e-ae20-4438-a6e3-1bab10fa6cda",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://foundervaults.com/",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -272,
+        -160
+      ],
+      "id": "7c1bcd0e-3725-43e3-b982-379e3db4f2be",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "db7a5848-a7b1-4a0a-8d0c-c275189af71c",
+              "leftValue": "={{$json[\"statusCode\"].toString()}}",
+              "rightValue": "200",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "e56612da-24b7-4e77-bf9a-6131eedbfa5b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "80fcdd80-b1b3-4935-bc0b-431442a0a33b",
+              "name": "status ",
+              "value": "website up",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        336,
+        -224
+      ],
+      "id": "04a3feaa-57a9-4d7d-a41e-8ed427da4503",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "82fb078a-1b6b-4acf-9793-ef57fa53a766",
+              "name": "status",
+              "value": "website down",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        336,
+        -16
+      ],
+      "id": "d598cba8-3581-435d-b508-f9877bae94eb",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "sendTo": "mujtaba078123@gmail.com",
+        "subject": "Website is UP",
+        "message": "Check the website current condition it is successfully in Up conditon",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        -240
+      ],
+      "id": "00da8ed2-e30b-4189-b1b1-ff11b5fc1287",
+      "name": "Send a message",
+      "webhookId": "bafaa5e9-3faa-48ff-971b-c32f1e9ae7ca",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "n2f7d7lq2wmBTWpK",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "mujtaba078123@gmail.com",
+        "subject": "Website is DOWN",
+        "message": "Check the website current condition it is successfully in Up conditon",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        64
+      ],
+      "id": "68c6608d-9233-479d-a9b4-3649a38591d7",
+      "name": "Send a message1",
+      "webhookId": "c9d7fdf9-15e2-4f7c-9a6f-790d8e268f02",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "n2f7d7lq2wmBTWpK",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fd0d549f-cf1a-4469-90d0-579d69773be7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "56607017d68f342e45e9cf6aeeae1b9181435c727032b7ef14e62a978ff58395"
+  },
+  "nodeGroups": [],
+  "id": "0wFIERzJnn675315",
+  "tags": []
+}
